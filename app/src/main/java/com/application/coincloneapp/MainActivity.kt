@@ -10,8 +10,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        Timber.tag("MainActivity").d("onCreate")
-        Timber.tag("MainActivity").d("onCreate")
+        Timber.d("onCreate")
+
 
 
     }
