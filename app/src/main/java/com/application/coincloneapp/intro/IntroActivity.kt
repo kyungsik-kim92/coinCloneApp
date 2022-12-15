@@ -1,4 +1,4 @@
-package com.application.coincloneapp.view
+package com.application.coincloneapp.intro
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

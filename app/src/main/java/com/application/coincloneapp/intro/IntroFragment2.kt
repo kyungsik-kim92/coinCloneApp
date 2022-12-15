@@ -1,19 +1,20 @@
-package com.application.coincloneapp.view
+package com.application.coincloneapp.intro
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
-import com.application.coincloneapp.R
-import com.application.coincloneapp.databinding.FragmentIntro1Binding
+import com.application.coincloneapp.databinding.FragmentIntro2Binding
+import com.application.coincloneapp.view.SelectActivity
 
 
-class IntroFragment1 : Fragment() {
+class IntroFragment2 : Fragment() {
 
-    private var _binding : FragmentIntro1Binding? = null
+    private var _binding : FragmentIntro2Binding? = null
     private val binding get() =_binding!!
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,15 +27,18 @@ class IntroFragment1 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentIntro1Binding.inflate(inflater,container,false)
+        _binding = FragmentIntro2Binding.inflate(inflater,container,false)
         return binding.root
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.nextBtn.setOnClickListener{
-            Navigation.findNavController(view).navigate(R.id.action_introFragment1_to_introFragment2)
+        binding.nextBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SelectActivity::class.java)
+            startActivity(intent)
 
         }
     }
