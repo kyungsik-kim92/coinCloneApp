@@ -3,7 +3,9 @@ package com.application.coincloneapp.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.application.coincloneapp.R
+import timber.log.Timber
 
 class SelectActivity : AppCompatActivity() {
 
@@ -15,6 +17,9 @@ class SelectActivity : AppCompatActivity() {
         setContentView(R.layout.activity_select)
 
         viewModel.getCurrentCoinList()
+        viewModel.currentPriceResult.observe(this, Observer {
+            Timber.d(it.toString())
+        })
 
     }
 }
