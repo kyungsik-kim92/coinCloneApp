@@ -14,6 +14,8 @@ import com.application.coincloneapp.datamodel.CurrentPriceResult
 class SelectRVAdapter(val context: Context, val coinPriceList: List<CurrentPriceResult>) :
     RecyclerView.Adapter<SelectRVAdapter.ViewHolder>() {
 
+    val selectedCoinList = ArrayList<String>()
+
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -45,12 +47,48 @@ class SelectRVAdapter(val context: Context, val coinPriceList: List<CurrentPrice
             holder.coinPriceUpDown.setTextColor(Color.parseColor("#114fed"))
 
 
-        } else{
+        } else {
             holder.coinPriceUpDown.text = "상승입니다"
-            holder.coinPriceUpDown.setTextColor(Color.parseColor("#ed2e11"))}
+            holder.coinPriceUpDown.setTextColor(Color.parseColor("#ed2e11"))
+        }
+
+
+        val likeImage = holder.likeImage
+        val currentCoin = coinPriceList[position].coinName
+
+        // view 를 그려줄 때
+        if (selectedCoinList.contains(currentCoin)){
+            likeImage.setImageResource(R.drawable.like_red)
+
+        }else{
+
+            likeImage.setImageResource(R.drawable.like_grey)
+        }
+
+
+        likeImage.setOnClickListener {
+
+            // 포함하면
+            if (selectedCoinList.contains(currentCoin)) {
+
+                likeImage.setImageResource(R.drawable.like_grey)
+                selectedCoinList.remove(currentCoin)
+
+            } else {
+            // 포함하지 않으면
+                likeImage.setImageResource(R.drawable.like_red)
+                selectedCoinList.add(currentCoin)
+
+
+            }
+
+
+
+        }
 
 
     }
+
 
     override fun getItemCount(): Int {
 
