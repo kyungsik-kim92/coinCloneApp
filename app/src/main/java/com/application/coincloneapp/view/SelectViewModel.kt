@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.application.coincloneapp.datamodel.CurrentPrice
 import com.application.coincloneapp.datamodel.CurrentPriceResult
+import com.application.coincloneapp.datastore.MyDataStore
 import com.application.coincloneapp.repository.NetWorkRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class SelectViewModel : ViewModel() {
 
     // 데이터변화를 관찰 LiveData
     private val _currentPriceResult = MutableLiveData<List<CurrentPriceResult>>()
-    val currentPriceResult : LiveData<List<CurrentPriceResult>>
+    val currentPriceResult: LiveData<List<CurrentPriceResult>>
         get() = _currentPriceResult
 
 
@@ -40,13 +41,18 @@ class SelectViewModel : ViewModel() {
 
                 currentPriceResultList.add(currentPriceResult)
 
-            }catch (e : java.lang.Exception) {
+            } catch (e: java.lang.Exception) {
                 Timber.d(e.toString())
             }
 
 
         }
         _currentPriceResult.value = currentPriceResultList
+    }
+
+    fun setUpFirstFlag() = viewModelScope.launch {
+        MyDataStore().setupFirstData()
+
     }
 
 
