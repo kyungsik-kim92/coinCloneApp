@@ -7,8 +7,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Observer
-import com.application.coincloneapp.MainActivity
-import com.application.coincloneapp.R
+import com.application.coincloneapp.view.main.MainActivity
 import com.application.coincloneapp.databinding.ActivityIntroBinding
 import timber.log.Timber
 
