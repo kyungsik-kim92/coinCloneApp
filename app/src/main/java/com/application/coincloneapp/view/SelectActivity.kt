@@ -7,14 +7,13 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.application.coincloneapp.MainActivity
-import com.application.coincloneapp.R
 import com.application.coincloneapp.databinding.ActivitySelectBinding
 import com.application.coincloneapp.view.adapter.SelectRVAdapter
 import timber.log.Timber
 
 class SelectActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySelectBinding
+    private lateinit var binding: ActivitySelectBinding
 
     private val viewModel: SelectViewModel by viewModels()
 
@@ -31,19 +30,28 @@ class SelectActivity : AppCompatActivity() {
 
             selectRVAdapter = SelectRVAdapter(this, it)
 
-            binding.coinListRV.adapter =selectRVAdapter
+            binding.coinListRV.adapter = selectRVAdapter
             binding.coinListRV.layoutManager = LinearLayoutManager(this)
 
             Timber.d(it.toString())
         })
 
-        viewModel.setUpFirstFlag()
 
-        binding.laterTextArea.setOnClickListener{
-            val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)
+
+        binding.laterTextArea.setOnClickListener {
+
+            viewModel.setUpFirstFlag()
+            viewModel.saveSelectedCoinList(selectRVAdapter.selectedCoinList)
+
 
         }
+
+        viewModel.save.observe(this, Observer {
+            if (it.equals("done")) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        })
 
     }
 }
