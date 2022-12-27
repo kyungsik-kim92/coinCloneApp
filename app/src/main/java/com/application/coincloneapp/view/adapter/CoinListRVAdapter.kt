@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +12,12 @@ import com.application.coincloneapp.db.entity.InterestedCoinEntity
 
 class CoinListRVAdapter(val context: Context, val dataSet: List<InterestedCoinEntity>) :
     RecyclerView.Adapter<CoinListRVAdapter.ViewHolder>() {
+
+    interface ItemClick{
+        fun onClick (view: View, position: Int)
+
+    }
+    var itemClick : ItemClick? = null
 
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,6 +37,11 @@ class CoinListRVAdapter(val context: Context, val dataSet: List<InterestedCoinEn
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        holder.itemView.findViewById<ImageView>(R.id.likeBtn).setOnClickListener{ v ->
+            itemClick?.onClick(v,position)
+
+        }
 
         holder.coinName.text = dataSet[position].coin_name
 

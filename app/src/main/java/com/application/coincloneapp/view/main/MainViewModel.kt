@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.application.coincloneapp.db.entity.InterestedCoinEntity
 import com.application.coincloneapp.repository.DBRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -18,9 +19,19 @@ class MainViewModel : ViewModel() {
         val coinList = dbRepository.getAllInterestCoinData().asLiveData()
 
         selectedCoinList = coinList
+    }
 
 
+    fun updateInterestCoinData(interestedCoinEntity: InterestedCoinEntity) = viewModelScope.launch(Dispatchers.IO) {
 
+        if (interestedCoinEntity.selected){
+            interestedCoinEntity.selected = false
+        }else{
+            interestedCoinEntity.selected = true
+        }
+
+        dbRepository.updateInterestCoinData(interestedCoinEntity)
 
     }
+
 }
