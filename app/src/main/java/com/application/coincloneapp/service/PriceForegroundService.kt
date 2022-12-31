@@ -7,11 +7,23 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.application.coincloneapp.R
+import com.application.coincloneapp.datamodel.CurrentPrice
+import com.application.coincloneapp.datamodel.CurrentPriceResult
+import com.application.coincloneapp.repository.NetWorkRepository
 import com.application.coincloneapp.view.main.MainActivity
+import com.google.gson.Gson
+import kotlinx.coroutines.*
+import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PriceForegroundService : Service() {
 
+    private val netWorkRepository = NetWorkRepository()
+
     private val NOTIFICATION_ID = 10000
+
+    lateinit var job : Job
 
     override fun onCreate() {
         super.onCreate()
@@ -24,12 +36,30 @@ class PriceForegroundService : Service() {
 
             "START" -> {
 
-                startForeground(NOTIFICATION_ID,makeNotification())
+                job = CoroutineScope(Dispatchers.Default).launch {
+
+                    while (true) {
+                        Timber.d("START")
+                        startForeground(NOTIFICATION_ID, makeNotification())
+
+                        delay(3000)
+                    }
+
+                }
 
 
             }
 
             "STOP" -> {
+                Timber.d("STOP")
+
+                try {
+                    job.cancel()
+                    stopForeground(true)
+                    stopSelf()
+                } catch (e : java.lang.Exception) {
+
+                }
 
 
             }
@@ -45,8 +75,16 @@ class PriceForegroundService : Service() {
         return null
     }
 
+    suspend fun makeNotification(): Notification {
 
-    fun makeNotification(): Notification {
+        val result = getAllCoinList()
+
+        val randomNum = Random().nextInt(result.size)
+
+        val title = result[randomNum].coinName
+        val content = result[randomNum].coinInfo.fluctate_24H
+
+
         val intent = Intent(this, MainActivity::class.java).apply {
 
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -58,8 +96,8 @@ class PriceForegroundService : Service() {
 
         val builder = NotificationCompat.Builder(this, "CHANNEL_ID")
             .setSmallIcon(R.drawable.ic_baseline_access_alarms_24)
-            .setContentTitle("title")
-            .setContentText("content")
+            .setContentTitle("코인 이름 : $title")
+            .setContentText("변동 가격 : $content")
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -86,4 +124,33 @@ class PriceForegroundService : Service() {
 
 
     }
+
+    suspend fun getAllCoinList(): ArrayList<CurrentPriceResult> {
+
+        val result = netWorkRepository.getCurrentCoinList()
+
+        val currentPriceResultList = ArrayList<CurrentPriceResult>()
+
+        for (coin in result.data) {
+
+            try {
+                val gson = Gson()
+                val gsonToJson = gson.toJson(result.data.get(coin.key))
+                val gsonFromJson = gson.fromJson(gsonToJson, CurrentPrice::class.java)
+
+                val currentPriceResult = CurrentPriceResult(coin.key, gsonFromJson)
+
+                currentPriceResultList.add(currentPriceResult)
+
+            } catch (e: java.lang.Exception) {
+                Timber.d(e.toString())
+            }
+
+        }
+
+        return currentPriceResultList
+
+    }
+
+
 }
